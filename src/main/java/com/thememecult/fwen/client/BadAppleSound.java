@@ -18,10 +18,6 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 /**
  * Starts the track when the effect is first applied and stops it when the
  * effect goes away, whether that is milk, death or the duration running out.
- *
- * <p>Minecraft's sound engine cannot seek, so audio is only started for a
- * freshly applied effect. Rejoining midway leaves you with a silent video,
- * which is the honest outcome rather than a track that is minutes out of sync.
  */
 @EventBusSubscriber(modid = Fwen.MOD_ID, value = Dist.CLIENT)
 public final class BadAppleSound {
@@ -49,26 +45,20 @@ public final class BadAppleSound {
         }
 
         int elapsed = BadApple.DURATION_TICKS - effect.getDuration();
-        boolean fresh = elapsed <= FRESH_TICKS;
-        boolean wasFresh = lastElapsed <= FRESH_TICKS;
+        // Lower bound matters for /effect give with a duration longer than video
+        boolean fresh = elapsed >= 0 && elapsed <= FRESH_TICKS;
+        boolean wasFresh = lastElapsed >= 0 && lastElapsed <= FRESH_TICKS;
 
-        // Eating a second Bad Apple refreshes the duration to full, which sends
-        // the video back to frame 0. Entering the fresh window from outside it
-        // is how we spot that, so the track restarts with the video instead of
-        // carrying on minutes ahead of it. Testing the edge rather than the
-        // level keeps duration jitter from the server resync out of it.
+        // Eating a second Bad Apple refreshes the duration to full
         if (fresh && !wasFresh) {
             stop(mc);
             start(mc);
         }
-
-        // After stop(), which clears this back to "no effect seen".
         lastElapsed = elapsed;
     }
 
     private static void start(Minecraft mc) {
-        // Relative, unattenuated, at the listener: a non-positional track that
-        // still answers to the Jukebox/Records volume slider.
+        // Relative, unattenuated, at the listener
         playing = new SimpleSoundInstance(
                 FwenSounds.BAD_APPLE.get().getLocation(),
                 SoundSource.RECORDS,

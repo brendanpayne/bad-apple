@@ -4,11 +4,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 
-/**
- * Common entry point. Everything registered here exists on both sides;
- * rendering lives in {@code com.thememecult.fwen.client} and is never
- * classloaded on a dedicated server.
- */
 @Mod(Fwen.MOD_ID)
 public class Fwen {
     public static final String MOD_ID = "fwen";

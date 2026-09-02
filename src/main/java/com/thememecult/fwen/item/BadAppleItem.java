@@ -15,8 +15,7 @@ public class BadAppleItem extends Item {
 
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
-        // Apply server-side so the effect is synced to the client normally,
-        // which is what lets the overlay survive a relog.
+        // Apply server-side so the effect is synced to the client normally
         if (!level.isClientSide()) {
             entity.addEffect(new MobEffectInstance(
                     FwenEffects.BAD_APPLE,

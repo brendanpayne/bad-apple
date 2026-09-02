@@ -13,13 +13,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
 
-/**
- * Blits one cell of the Bad Apple!! atlas over the whole HUD.
- *
- * <p>The atlas is 1-bit alpha: silhouette pixels are opaque black, background
- * pixels are fully transparent, so the game shows through the white areas of
- * the original video. Stretched to fill, never letterboxed.
- */
 @EventBusSubscriber(modid = Fwen.MOD_ID, value = Dist.CLIENT)
 public final class BadAppleOverlay {
     private BadAppleOverlay() {}
@@ -52,18 +45,14 @@ public final class BadAppleOverlay {
         int width = mc.getWindow().getGuiScaledWidth();
         int height = mc.getWindow().getGuiScaledHeight();
 
-        // The HUD layers drew at increasing Z with depth testing on, and this
-        // event fires back at the base pose, so a depth-tested quad here would be
-        // rejected wherever vanilla already drew. Turn depth off so the overlay
-        // unconditionally covers everything the HUD painted.
         RenderSystem.disableDepthTest();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         graphics.blit(ATLAS,
-                0, 0, width, height,          // destination, stretched to fill
-                u, v,                          // source origin in the atlas
+                0, 0, width, height,  // destination, stretched to fill
+                u, v,                                     // source origin in the atlas
                 BadApple.CELL_WIDTH, BadApple.CELL_HEIGHT,
                 BadApple.ATLAS_WIDTH, BadApple.ATLAS_HEIGHT);
 
@@ -72,10 +61,7 @@ public final class BadAppleOverlay {
         RenderSystem.enableDepthTest();
     }
 
-    /**
-     * Frame index from the effect's own remaining duration, never from a counter
-     * we keep, so it stays in sync across a relog.
-     */
+    /** Frame index from the effect's own remaining duration */
     public static int frameFor(MobEffectInstance effect, float partialTick) {
         float elapsedTicks = (BadApple.DURATION_TICKS - effect.getDuration()) + partialTick;
         int frame = (int) (elapsedTicks * BadApple.FPS / 20.0F);
