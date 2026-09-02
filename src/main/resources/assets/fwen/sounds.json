@@ -1,0 +1,12 @@
+{
+  "bad_apple": {
+    "category": "record",
+    "subtitle": "subtitles.fwen.bad_apple",
+    "sounds": [
+      {
+        "name": "fwen:bad_apple",
+        "stream": true
+      }
+    ]
+  }
+}
